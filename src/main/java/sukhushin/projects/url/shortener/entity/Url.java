@@ -19,6 +19,12 @@ public class Url {
     @Column(name = "original_url", unique = true, nullable = false)
     private String originalUrl;
 
+    @Column(name = "shortening_count", nullable = false)
+    private Long shorteningCount = 1L;
+
+    @Column(name = "accessing_count", nullable = false)
+    private Long accessingCount = 0L;
+
     public Url(String originalUrl) {
         this.originalUrl = originalUrl;
     }
