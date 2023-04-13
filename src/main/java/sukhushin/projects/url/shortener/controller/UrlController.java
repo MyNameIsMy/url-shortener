@@ -1,8 +1,11 @@
 package sukhushin.projects.url.shortener.controller;
 
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import sukhushin.projects.url.shortener.dto.OriginalUrl;
 import sukhushin.projects.url.shortener.dto.ShortenedUrl;
 import sukhushin.projects.url.shortener.service.UrlService;
@@ -19,10 +22,12 @@ public class UrlController {
         return ResponseEntity.ok(shortenedUrl);
     }
 
-    @GetMapping("/find")
-    public ResponseEntity<OriginalUrl> find(@RequestParam("shortened-id") String shortenedId) {
+    @GetMapping("/find/{shortened-id}")
+    public RedirectView find(@PathVariable("shortened-id") String shortenedId) {
         OriginalUrl originalUrl = urlService.find(shortenedId);
 
-        return ResponseEntity.ok(originalUrl);
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(originalUrl.originalUrl());
+        return redirectView;
     }
 }

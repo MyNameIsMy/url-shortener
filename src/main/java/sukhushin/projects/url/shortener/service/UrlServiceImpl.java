@@ -2,6 +2,7 @@ package sukhushin.projects.url.shortener.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,10 @@ import java.util.UUID;
 public class UrlServiceImpl implements UrlService {
     @Autowired
     private UrlRepository urlRepository;
+
+    @Value("${short-url.base}")
+    private String shortUrlBase;
+
     @Override
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public ShortenedUrl shorten(OriginalUrl originalUrl) {
@@ -24,10 +29,10 @@ public class UrlServiceImpl implements UrlService {
 
         if (optionalUrl.isEmpty()) {
             Url url = new Url(originalUrl.originalUrl());
-            return new ShortenedUrl(urlRepository.save(url).getShortenedId().toString());
+            return new ShortenedUrl(shortUrlBase + urlRepository.save(url).getShortenedId().toString());
         }
 
-        return new ShortenedUrl(optionalUrl.get().getShortenedId().toString());
+        return new ShortenedUrl(shortUrlBase + optionalUrl.get().getShortenedId().toString());
     }
 
     public OriginalUrl find(String shortenedId) {
